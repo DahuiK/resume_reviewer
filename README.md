@@ -15,4 +15,4 @@ The analyzer compares resumes to editable templates in `ROLE_TEMPLATES`. Out of 
 - Mechanical
 
 ## Application
-[▶ Live App]([https://your-streamlit-app-url](https://resumereviewerforrobosoccer.streamlit.app/)) 
+[▶ Live App](https://resumereviewerforrobosoccer.streamlit.app/) 
