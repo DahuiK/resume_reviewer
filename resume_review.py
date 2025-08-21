@@ -6,10 +6,10 @@ import re
 import base64
 from typing import List, Dict, Tuple
 
-import numpy as np
-import pandas as pd
+# import numpy as np
+# import pandas as pd
 import streamlit as st
-from sklearn.feature_extraction.text import TfidfVectorizer
+# from sklearn.feature_extraction.text import TfidfVectorizer
 
 try:
     import fitz  # PyMuPDF
@@ -20,6 +20,7 @@ try:
     import PyPDF2  # PDF text extraction
 except Exception:
     PyPDF2 = None
+    
 
 st.set_page_config(page_title="AI Resume Analyzer — Role Focus", page_icon="🧠", layout="wide")
 st.title("🧠 AI Resume Analyzer — Role Focus")
@@ -103,31 +104,23 @@ def clean_text(t: str) -> str:
 
 
 def extract_text_from_pdf(pdf_bytes: bytes) -> str:
-    """
-    Try PyPDF2 first (generally good for text-based PDFs), then fall back to PyMuPDF (fitz)
-    which can handle a wider range of PDFs. Returns empty string on failure.
-    """
-    # Try PyPDF2
+    # Try PyPDF2 first
     if PyPDF2 is not None:
         try:
             reader = PyPDF2.PdfReader(io.BytesIO(pdf_bytes))
             text = "\n".join((page.extract_text() or "") for page in reader.pages)
-            if text and text.strip():
+            if text.strip():
                 return text
         except Exception as e:
             st.warning(f"PyPDF2 parse failed, falling back to PyMuPDF: {e}")
-
-    # Fallback: PyMuPDF (fitz)
+    # Fallback: PyMuPDF
     if fitz is not None:
         try:
             doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-            text = "\n".join((page.get_text() or "") for page in doc)
-            return text
+            return "\n".join((page.get_text() or "") for page in doc)
         except Exception as e:
             st.error(f"Failed to parse PDF with PyMuPDF: {e}")
             return ""
-
-    # Neither lib available
     st.error("No PDF parser installed. Add `PyPDF2` or `pymupdf` to requirements.txt.")
     return ""
 
